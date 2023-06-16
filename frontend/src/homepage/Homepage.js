@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import "./Homepage.css";
 import UserContext from "../auth/UserContext";
 
-/** Homepage.
+/** Homepage of site.
  *
- * Displayes welcome message or login/register buttons.
+ * Shows welcome message or login/register buttons.
  *
  * Routed at /
  *
@@ -14,27 +14,31 @@ import UserContext from "../auth/UserContext";
 
 function Homepage() {
   const { currentUser } = useContext(UserContext);
-  console.debug(`Homepage currentUser:::${currentUser}`);
+  console.debug("Homepage", "currentUser=", currentUser);
 
   return (
-    <div className="Homepage">
+      <div className="Homepage">
         <div className="container text-center">
-            <h1 className="mb-4 font-weight-bold">Jobly</h1>
-            <p className="lead">Lets get applying to jobs.</p>
-            {currentUser ? <h2>Welcome, {currentUser.username}!</h2>
-              : ( 
-                <p>
-                    <Link 
-                        className="btn btn-primary font-weight-bold mr-3"
-                        to="/login">Log in</Link>
-                    <Link 
-                        className="btn btn-success font-weight-bold"
-                        to="/signup">Sign up</Link>
-                </p> 
-                )
-            }
+          <h1 className="mb-4 text-white font-weight-bold">Jobly</h1>
+          <p className="lead text-white">All the jobs in one, convenient place.</p>
+          {currentUser
+              ? <h2 className="text-white">
+                Welcome Back, {currentUser.firstName || currentUser.username}!
+              </h2>
+              : (
+                  <p>
+                    <Link className="btn btn-primary font-weight-bold mr-3"
+                          to="/login">
+                      Log in
+                    </Link>
+                    <Link className="btn btn-primary font-weight-bold"
+                          to="/signup">
+                      Sign up
+                    </Link>
+                  </p>
+              )}
         </div>
-    </div>
+      </div>
   );
 }
 
