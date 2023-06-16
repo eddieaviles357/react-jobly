@@ -1,0 +1,9 @@
+.Navigation {
+  background: linear-gradient(to bottom right, rgb(255, 255, 255), rgb(184, 169, 172));
+    border-bottom: 2px solid rgba(0, 0, 0, 0.125);
+  }
+  
+  .nav-link.active {
+    font-weight: bold;
+    color: black;
+  }
