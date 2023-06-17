@@ -67,7 +67,6 @@ function ProfileForm() {
     try {
       updatedUser = await JoblyApi.saveProfile(username, profileData);
     } catch (errors) {
-      debugger;
       setFormErrors(errors);
       return;
     }
