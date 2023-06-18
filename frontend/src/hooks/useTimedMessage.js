@@ -1,36 +1,52 @@
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 
-/** Custom hook for keeping state data synced with localStorage.
+/** Custom hook for managing "flash" messages.
  *
- * This creates `item` as state and look in localStorage for current value
- * (if not found, defaults to `firstValue`)
+ * This adds an item in state, `active`, which can be controlled by the
+ * component as desired. The component would typically `setActive(true)`
+ * to start displaying the message, and after `timeInMsec`, active would
+ * go back to false, which would typically stop showing the message.
  *
- * When `item` changes, effect re-runs:
- * - if new state is null, removes from localStorage
- * - else, updates localStorage
+ * In the component::
  *
- * To the component, this just acts like state that is also synced to/from
- * localStorage::
+ *   const [myMsgFlag, setMyMsgFlag] = useTimedMessage();
  *
- *   const [myThing, setMyThing] = useLocalStorage("myThing")
+ *   function somethingDidntWork() {
+ *     setMsgFlag(true);
+ *   }
+ *
+ *   return (
+ *     {myMsgFlag ? <p>Oh No!</p> : null}
+ *   )
+ *
+ * While this hook was written for showing flash messages, it's really just
+ * a hook for timed state clearing -- this same pattern could be useful for
+ * other tasks.
+ *
  */
 
-function useLocalStorage(key, firstValue = null) {
-  const initialValue = localStorage.getItem(key) || firstValue;
+function useTimedMessage(timeInMsec = 3000) {
+  const [active, setActive] = useState(false);
 
-  const [item, setItem] = useState(initialValue);
+  const messageShownRef = useRef(false);
 
-  useEffect(function setKeyInLocalStorage() {
-    console.debug("hooks useLocalStorage useEffect", "item=", item);
+  useEffect(
+      function showSavedMessage() {
+        console.debug(
+            "useTimedMessage useEffect showSavedMessage", "active=", active);
 
-    if (item === null) {
-      localStorage.removeItem(key);
-    } else {
-      localStorage.setItem(key, item);
-    }
-  }, [key, item]);
+        if (active && !messageShownRef.current) {
+          messageShownRef.current = true;
+          setTimeout(function removeMessage() {
+            setActive(false);
+            messageShownRef.current = false;
+          }, timeInMsec);
+        }
+      },
+      [active, timeInMsec],
+  );
 
-  return [item, setItem];
+  return [active, setActive];
 }
 
-export default useLocalStorage;
+export default useTimedMessage;
